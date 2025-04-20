@@ -21,21 +21,31 @@ public class Transmissor {
         
         carregarMensagemArquivo();
     }
-    
-    private void carregarMensagemArquivo() {
-       try(BufferedReader br = new BufferedReader(new FileReader(arquivo))){
-         String linha;
-          while((linha= br.readLine())!= null){
-            mensagem += linha + "\n";
-          }
 
-       }
-       catch (FileNotFoundException e) {
-           throw new RuntimeException(e);
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
+    // Método responsável por carregar o conteúdo de um arquivo de texto (.txt) para a variável 'mensagem'
+    private void carregarMensagemArquivo() {
+
+        // Tenta abrir o arquivo informado usando BufferedReader (leitor de texto com buffer)
+        try (BufferedReader br = new BufferedReader(new FileReader(arquivo))) {
+
+            String linha; // Variável temporária para armazenar cada linha lida
+
+            // Lê o arquivo linha por linha, até chegar ao final (quando readLine() retorna null)
+            while ((linha = br.readLine()) != null) {
+                // Adiciona a linha lida à variável 'mensagem' junto com uma quebra de linha (\n)
+                mensagem += linha + "\n";
+            }
+
+            // Caso o arquivo não seja encontrado, lança uma exceção
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+
+            // Caso ocorra qualquer erro de leitura (IO), lança uma exceção
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
     
     //convertendo um símbolo para "vetor" de boolean (bits)
     private boolean[] streamCaracter(char simbolo){
