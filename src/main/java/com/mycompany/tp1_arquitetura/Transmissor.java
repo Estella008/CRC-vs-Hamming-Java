@@ -74,6 +74,14 @@ public class Transmissor {
         /*sua implementação aqui!!!
         modifique o que precisar neste método
         */
+
+        boolean [] polinomio = {true, true, false, true}; //1101 - vou colocar só um exemplo, depois tento mudar aaaaaa
+        boolean[] dados = new boolean[bits.length + polinomio.length - 1]; //aqui eu crio o vetor do tamanho do polinomio-1, mas ainda tenho que rever isso"
+
+        //Fazer um laço pra pegar a mensagem
+
+        //geralmente depois disso faço a divisao xor, como fazer isso aqui? só deus... pesquiso depois
+
         
         return bits;
     }
