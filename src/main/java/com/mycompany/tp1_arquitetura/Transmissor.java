@@ -77,14 +77,34 @@ public class Transmissor {
         
         return bits;
     }
+    private int nParidadeHamming(int numeroBits, int r){ //r= número de paridades
+        if((Math.pow(2,r))<(numeroBits+r+1)){
+            return r;
+        }
+        return nParidadeHamming(numeroBits, r++);
+
+
+    }
     
-    private boolean[] dadoBitsHamming(boolean bits[]){
+    private int dadoBitsHamming(boolean[] bits){
+        int numeroParidade=nParidadeHamming(bits.length,0);
+        boolean vetAux[] = new boolean[bits.length+numeroParidade];
+        int potencia = 0;
+        int ibits=0;
+        for(int i=0; i<vetAux.length; i++){
+            if(Math.pow(2,potencia)!=(i+1)){
+                vetAux[i]=bits[ibits];
+                ibits++;
+            }
+            potencia++;
+        }
+
         
         /*sua implementação aqui!!!
         modifique o que precisar neste método
         */
         
-        return bits;
+        return vetAux.length;
     }
     
     public void enviaDado(){
