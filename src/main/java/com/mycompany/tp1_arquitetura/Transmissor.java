@@ -86,34 +86,67 @@ public class Transmissor {
         return bits;
     }
     private int nParidadeHamming(int numeroBits, int r){ //r= número de paridades
-        if((Math.pow(2,r))<(numeroBits+r+1)){
+        if((Math.pow(2,r))>=(numeroBits+r+1)){
             return r;
         }
-        return nParidadeHamming(numeroBits, r++);
+        return nParidadeHamming(numeroBits, r+1);
 
 
     }
-    
-    private int dadoBitsHamming(boolean[] bits){
-        int numeroParidade=nParidadeHamming(bits.length,0);
-        boolean vetAux[] = new boolean[bits.length+numeroParidade];
-        int potencia = 0;
-        int ibits=0;
-        for(int i=0; i<vetAux.length; i++){
-            if(Math.pow(2,potencia)!=(i+1)){
-                vetAux[i]=bits[ibits];
+
+    private boolean[] dadoBitsHamming(boolean[] bits) {
+        // Calcula quantos bits de paridade são necessários
+        int numeroParidade = nParidadeHamming(bits.length, 0);
+
+        // Cria um vetor auxiliar com espaço para os bits de dados + bits de paridade
+        boolean vetAux[] = new boolean[bits.length + numeroParidade];
+
+        int potencia = 0; // Usado para identificar as posições que são potências de 2
+        int ibits = 0;    // Índice para percorrer o vetor original de dados
+
+        // Preenche vetAux com os bits de dados nas posições que NÃO são potências de 2
+        for (int i = 0; i < vetAux.length; i++) {
+            if ((int)Math.pow(2, potencia) != (i + 1)) {
+                // Posição não é de paridade, insere bit de dados
+                vetAux[i] = bits[ibits];
                 ibits++;
+            } else {
+                // Posição de paridade, pula
+                potencia++;
             }
-            potencia++;
         }
 
-        
-        /*sua implementação aqui!!!
-        modifique o que precisar neste método
-        */
-        
-        return vetAux.length;
+        // Agora vamos calcular os valores dos bits de paridade
+        int indiceParidade;
+        int potencia2 = 0;
+
+        // Para cada bit de paridade necessário
+        while (potencia2 < numeroParidade) {
+            // A posição do bit de paridade é sempre 2^potencia2 - 1 (índice começa em 0)
+            indiceParidade = (int)Math.pow(2, potencia2) - 1;
+
+            boolean vParidade = false; // Acumulador para calcular a paridade (XOR)
+
+            // Percorre os blocos que o bit de paridade cobre
+            for (int i = indiceParidade; i < vetAux.length; i += 2 * (indiceParidade + 1)) {
+                // Dentro de cada bloco, percorre os bits que esse bit de paridade verifica
+                for (int k = i; k < i + (indiceParidade + 1) && k < vetAux.length; k++) {
+                    if (k != indiceParidade) {
+                        // Aplica XOR apenas nos bits diferentes da posição da própria paridade
+                        vParidade ^= vetAux[k];
+                    }
+                }
+            }
+
+            // Define o valor do bit de paridade calculado
+            vetAux[indiceParidade] = vParidade;
+            potencia2++;
+        }
+
+        // Retorna o vetor final com bits de dados e de paridade
+        return vetAux;
     }
+
     
     public void enviaDado(){
         for(int i = 0; i < this.mensagem.length();i++){
