@@ -79,8 +79,17 @@ public class Transmissor {
         boolean[] dados = new boolean[bits.length + polinomio.length - 1]; //aqui eu crio o vetor do tamanho do polinomio-1, mas ainda tenho que rever isso"
 
         //Fazer um laço pra pegar a mensagem
+        for (int i = 0; i < dados.length; i++) {
+            if (bits[i]) { //realiza xor se for 1
+                for (int j = 0; j < polinomio.length; j++) {
+                    dados[j] = polinomio[j]; //como fazer xor aqui? tem alguma forma direta?
+
+                }
+            }
+        }
 
         //geralmente depois disso faço a divisao xor, como fazer isso aqui? só deus... pesquiso depois
+        boolean[] resultado = new boolean[bits.length + polinomio.length - 1];
 
         
         return bits;
