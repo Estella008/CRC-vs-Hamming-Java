@@ -37,7 +37,20 @@ public class Receptor {
         return true;
     }
     
-    private boolean[] decoficarDadoCRC(boolean bits[]){
+    private boolean[] decoficarDadoCRC(boolean bits[]){ //socorrooooo aaaaaa
+
+        //se a divisão for igual a 0, não houve errro
+        boolean[] polinomio = {true, true, false, true}; //1101
+        boolean[] dados = bits.clone(); //clona os bits recebidos
+
+        //realizo a divisao, mas usando o polinomio
+        for(int i = 0; i < bits.length-1; i++){
+            if(bits[i]){
+                for (int j = 0; j < polinomio.length; j++){
+                    dados[i + j] ^= polinomio[j];
+                }
+            }
+        }
         
         //implemente a decodificação Hemming aqui e encontre os 
         //erros e faça as devidas correções para ter a imagem correta
