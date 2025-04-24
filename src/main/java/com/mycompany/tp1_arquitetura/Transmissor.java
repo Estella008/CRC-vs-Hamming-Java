@@ -78,12 +78,16 @@ public class Transmissor {
         boolean [] polinomio = {true, true, false, true}; //1101 - vou colocar só um exemplo, depois tento mudar aaaaaa
         boolean[] dados = new boolean[bits.length + polinomio.length - 1]; //aqui eu crio o vetor do tamanho do polinomio-1, mas ainda tenho que rever isso"
 
-        //Fazer um laço pra pegar a mensagem
-        for (int i = 0; i < dados.length; i++) {
-            if (bits[i]) { //realiza xor se for 1
-                for (int j = 0; j < polinomio.length; j++) {
-                    dados[j] = polinomio[j]; //como fazer xor aqui? tem alguma forma direta?
+        for (int i = 0; i < bits.length; i++) { //copiando os bitws originais
+            dados[i] = bits[i];
+        }
 
+        //Fazer um laço pra pegar a mensagem
+        for (int i = 0; i < bits.length; i++) {
+            if (dados[i]) { //realiza xor se for 1
+                for (int j = 0; j < polinomio.length; j++) {
+                    dados[i + j] ^= polinomio[j]; //como fazer xor aqui? tem alguma forma direta?
+                //aqui faz o xor, custei descobrir
                 }
             }
         }
@@ -91,8 +95,18 @@ public class Transmissor {
         //geralmente depois disso faço a divisao xor, como fazer isso aqui? só deus... pesquiso depois
         boolean[] resultado = new boolean[bits.length + polinomio.length - 1];
 
+        //bits originais
+        for (int i = 0; i < bits.length; i++) {
+            resultado[i] = bits[i];
+        }
+
+        //bits do crc que são da divisão do xor
+        for (int i = 0; i < polinomio.length - 1; i++) {
+            resultado[bits.length + i] = dados[bits.length + i];
+        }
         
-        return bits;
+        return resultado;
+
     }
     private int nParidadeHamming(int numeroBits, int r){ //r= número de paridades
         if((Math.pow(2,r))>=(numeroBits+r+1)){
@@ -166,9 +180,12 @@ public class Transmissor {
                             você pode modificar o método anterior também
                     boolean bitsCRC[] = dadoBitsCRC(bits);
                 */
+                        boolean[] bitsCRC = dadoBitsCRC(bits); //adiciona o CRC pra enviar
+
+
 
                 //enviando a mensagem "pela rede" para o receptor (uma forma de testarmos esse método)
-                this.canal.enviarDado(bits);
+                this.canal.enviarDado(bitsCRC);
             }while(this.canal.recebeFeedback() == false);
             
             
