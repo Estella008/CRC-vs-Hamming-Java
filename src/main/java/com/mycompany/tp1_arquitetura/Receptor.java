@@ -51,11 +51,31 @@ public class Receptor {
                 }
             }
         }
+
+        //verifica se o resto da divisão ézero
+        boolean semErro = true;
+        for (int i = bits.length - (polinomio.length - 1); i < bits.length; i++) {
+            if (dados[i]) {
+                semErro = false;
+                break;
+            }
+        }
+
+        if (semErro) {
+            //extrai os bits originais
+            boolean[] bitsOriginais = new boolean[bits.length - (polinomio.length - 1)];
+            for (int i = 0; i < bitsOriginais.length; i++) {
+                bitsOriginais[i] = bits[i];
+            }
+
+            decodificarDado(bitsOriginais);
+        }
+
+        return semErro ? bits : null; // retorna os bits se ok, senão null
+    }
         
         //implemente a decodificação Hemming aqui e encontre os 
         //erros e faça as devidas correções para ter a imagem correta
-        return null;
-    }
     
     private boolean[] decoficarDadoHammig(boolean bits[]){
         
