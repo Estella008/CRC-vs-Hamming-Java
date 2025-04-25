@@ -87,7 +87,21 @@ public class Receptor {
     
     //recebe os dados do transmissor
     public void receberDadoBits(){
-        
+
+        boolean[] dadosRecebidos = this.canal.recebeDado();
+        boolean[] dadosCorrigidos = null;
+        boolean sucesso = false;
+
+        if (this.tecnica == Estrategia.CRC) {
+            dadosCorrigidos = decoficarDadoCRC(dadosRecebidos);
+            sucesso = (dadosCorrigidos != null);
+        } else {
+            //tem que fazer o hammer aqui depois
+            sucesso = decodificarDado(dadosRecebidos);
+        }
+
+        this.canal.enviaFeedBack(sucesso);
+
         /*if(this.tecnica == Estrategia.CRC){
             
         }else{
