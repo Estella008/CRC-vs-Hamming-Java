@@ -46,7 +46,7 @@ public class Receptor {
         //realizo a divisao, mas usando o polinomio
         for(int i = 0; i < bits.length-1; i++){
             if(bits[i]){
-                for (int j = 0; j < polinomio.length; j++){
+                for (int j = 0; j < polinomio.length && (i+j) < bits.length && bits[i+j]; j++){
                     dados[i + j] ^= polinomio[j];
                 }
             }
