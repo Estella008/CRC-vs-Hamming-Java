@@ -40,12 +40,12 @@ public class Receptor {
     private boolean[] decoficarDadoCRC(boolean bits[]){ //socorrooooo aaaaaa
 
         //se a divisão for igual a 0, não houve errro
-        boolean[] polinomio = {true, true, false, true}; //1101
+        boolean[] polinomio = {true, false, false, false, false, true, true, true, true}; //1101
         boolean[] dados = bits.clone(); //clona os bits recebidos
 
         //realizo a divisao, mas usando o polinomio
-        for(int i = 0; i < bits.length-1; i++){
-            if(bits[i]){
+        for(int i = 0; i < bits.length- polinomio.length; i++){
+            if(dados[i]){
                 for (int j = 0; j < polinomio.length; j++){
                     dados[i + j] ^= polinomio[j];
                 }

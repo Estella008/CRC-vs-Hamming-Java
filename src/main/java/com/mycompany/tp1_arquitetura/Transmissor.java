@@ -75,12 +75,13 @@ public class Transmissor {
         modifique o que precisar neste método
         */
 
-        boolean [] polinomio = {true, true, false, true}; //1101 - vou colocar só um exemplo, depois tento mudar aaaaaa
+        boolean[] polinomio = {true, false, false, false, false, true, true, true, true}; //1101 - vou colocar só um exemplo, depois tento mudar aaaaaa
         boolean[] dados = new boolean[bits.length + polinomio.length - 1]; //aqui eu crio o vetor do tamanho do polinomio-1, mas ainda tenho que rever isso"
 
-        for (int i = 0; i < bits.length; i++) { //copiando os bitws originais
+        for (int i = 0; i < bits.length; i++) { //copiando os bits originais
             dados[i] = bits[i];
         }
+
 
         //Fazer um laço pra pegar a mensagem
         for (int i = 0; i < bits.length; i++) {
