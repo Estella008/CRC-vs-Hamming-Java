@@ -109,67 +109,46 @@ public class Transmissor {
         return resultado;
 
     }
-    private int nParidadeHamming(int numeroBits, int r){ //r= número de paridades
-        if((Math.pow(2,r))>=(numeroBits+r+1)){
-            return r;
+
+    private boolean valorParidadeHamming(int indiceParidade, boolean[] bits){
+        boolean valorParidade = false;
+        // Percorre os blocos que o bit de paridade cobre
+        for (int i = indiceParidade; i < bits.length; i += 2 * (indiceParidade + 1)) {
+            // Dentro de cada bloco, percorre os bits que esse bit de paridade verifica
+            for (int k = i; k < i + (indiceParidade + 1) && k < bits.length; k++) {
+                if (k != indiceParidade) {
+                    // Aplica XOR apenas nos bits diferentes da posição da própria paridade
+                    valorParidade ^= bits[k];
+                }
+            }
         }
-        return nParidadeHamming(numeroBits, r+1);
-
-
+        return valorParidade;
     }
 
     private boolean[] dadoBitsHamming(boolean[] bits) {
-        // Calcula quantos bits de paridade são necessários
-        int numeroParidade = nParidadeHamming(bits.length, 0);
+        boolean[] bitsCodificado = new boolean[bits.length+4]; // 8 bits de dados + 4 bits de paridade
+        int indiceBits = 0;
 
-        // Cria um vetor auxiliar com espaço para os bits de dados + bits de paridade
-        boolean vetAux[] = new boolean[bits.length + numeroParidade];
-
-        int potencia = 0; // Usado para identificar as posições que são potências de 2
-        int ibits = 0;    // Índice para percorrer o vetor original de dados
-
-        // Preenche vetAux com os bits de dados nas posições que NÃO são potências de 2
-        for (int i = 0; i < vetAux.length; i++) {
-            if ((int)Math.pow(2, potencia) != (i + 1)) {
-                // Posição não é de paridade, insere bit de dados
-                vetAux[i] = bits[ibits];
-                ibits++;
-            } else {
-                // Posição de paridade, pula
+        // Passo 1: Preencher os bits de dados (nos índices que não são de paridade)
+        int potencia=0;
+        for (int i = 0; i < bitsCodificado.length; i++) {
+            if (i!= Math.pow(2,potencia)) {
+                bitsCodificado[i] = bits[indiceBits];
+                indiceBits++;
+            }else{
                 potencia++;
             }
         }
 
-        // Agora vamos calcular os valores dos bits de paridade
-        int indiceParidade;
-        int potencia2 = 0;
+        // Passo 2: Calcular os bits de paridade (após os dados estarem no lugar)
+        bitsCodificado[0] = valorParidadeHamming(0, bitsCodificado); // paridade 1
+        bitsCodificado[1] = valorParidadeHamming(1, bitsCodificado); // paridade 2
+        bitsCodificado[3] = valorParidadeHamming(3, bitsCodificado); // paridade 4
+        bitsCodificado[7] = valorParidadeHamming(7, bitsCodificado); // paridade 8
 
-        // Para cada bit de paridade necessário
-        while (potencia2 < numeroParidade) {
-            // A posição do bit de paridade é sempre 2^potencia2 - 1 (índice começa em 0)
-            indiceParidade = (int)Math.pow(2, potencia2) - 1;
-
-            boolean vParidade = false; // Acumulador para calcular a paridade (XOR)
-
-            // Percorre os blocos que o bit de paridade cobre
-            for (int i = indiceParidade; i < vetAux.length; i += 2 * (indiceParidade + 1)) {
-                // Dentro de cada bloco, percorre os bits que esse bit de paridade verifica
-                for (int k = i; k < i + (indiceParidade + 1) && k < vetAux.length; k++) {
-                    if (k != indiceParidade) {
-                        // Aplica XOR apenas nos bits diferentes da posição da própria paridade
-                        vParidade ^= vetAux[k];
-                    }
-                }
-            }
-
-            // Define o valor do bit de paridade calculado
-            vetAux[indiceParidade] = vParidade;
-            potencia2++;
-        }
-
-        // Retorna o vetor final com bits de dados e de paridade
-        return vetAux;
+        return bitsCodificado;
     }
+
 
     
     public void enviaDado(){

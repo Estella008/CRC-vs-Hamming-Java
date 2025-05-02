@@ -127,10 +127,10 @@ public class Receptor {
 
          if (erro) {
              int bitErrado= bitsParaInteiro(paridades);
-             if (bits[bitErrado]) {
-                 bits[bitErrado] = false;
+             if (bits[bitErrado -1]) {
+                 bits[bitErrado -1] = false;
              }else {
-                 bits[bitErrado] = true;
+                 bits[bitErrado -1] = true;
              }
 
          }
