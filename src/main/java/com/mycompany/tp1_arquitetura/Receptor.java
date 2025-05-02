@@ -1,5 +1,10 @@
 package com.mycompany.tp1_arquitetura;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLOutput;
+
 public class Receptor {
     
     //mensagem recebida pelo transmissor
@@ -171,7 +176,17 @@ public class Receptor {
     }
     
     //
-    public void gravaMensArquivo(){
+    public void gravaMensArquivo()  {
+
+        String nomeArquivo= "LivroMensArquivo.txt";
+        try(BufferedWriter wr = new BufferedWriter(new FileWriter(nomeArquivo))){
+            wr.write(this.mensagem);
+
+        }catch (IOException e){
+            System.out.println("Erro ao gravar arquivo");
+        }
+
+
         /*
         aqui você deve implementar um mecanismo para gravar a mensagem em arquivo
         */
