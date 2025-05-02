@@ -103,6 +103,7 @@ public class Receptor {
         }
         return resultado;
     }
+
     
     private boolean[] decoficarDadoHammig(boolean bits[]){
         boolean[] paridades = new boolean[4];
@@ -112,15 +113,25 @@ public class Receptor {
         paridades[2] = valorParidade(1, bits);
         paridades[1] = valorParidade(3, bits);
         paridades[0] = valorParidade(7, bits);
-         boolean semErro = true;
+         boolean erro = false;
          for(int i=0; i < paridades.length; i++){
              if (paridades[i]) {
-                 semErro = false;
+                 erro = true;
              }
          }
 
+         if (erro) {
+             int bitErrado= bitsParaInteiro(paridades);
+             if (bits[bitErrado]) {
+                 bits[bitErrado] = false;
+             }else {
+                 bits[bitErrado] = true;
+             }
 
-        return null;
+         }
+
+
+        return bits;
         }
 
         
