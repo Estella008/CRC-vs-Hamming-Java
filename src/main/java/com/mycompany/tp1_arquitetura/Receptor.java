@@ -17,18 +17,33 @@ public class Receptor {
     public String getMensagem() {
         return mensagem;
     }
- 
-    private boolean decodificarDado(boolean bits[]){
-        int codigoAscii = 0;
-        int expoente = bits.length-1;
-        
-        //converntendo os "bits" para valor inteiro para então encontrar o valor tabela ASCII
-        for(int i = 0; i < bits.length;i++){
-            if(bits[i]){
-                codigoAscii += Math.pow(2, expoente);
+    // a função decodificarDado foi separada para reaproveitamento do meto de converter bist em numero inteiro
+    private int bitsParaInteiro(boolean[] bits) {
+        int resultado = 0;
+        int expoente = bits.length - 1;
+
+        for (int i = 0; i < bits.length; i++) {
+            if (bits[i]) {
+                resultado += Math.pow(2, expoente);
             }
             expoente--;
         }
+
+        return resultado;
+    }
+
+
+    private boolean decodificarDado(boolean bits[]){
+        int codigoAscii = bitsParaInteiro(bits);
+//        int expoente = bits.length-1;
+//
+//        //converntendo os "bits" para valor inteiro para então encontrar o valor tabela ASCII
+//        for(int i = 0; i < bits.length;i++){
+//            if(bits[i]){
+//                codigoAscii += Math.pow(2, expoente);
+//            }
+//            expoente--;
+//        }
         
         //concatenando cada simbolo na mensagem original
         this.mensagem += (char)codigoAscii;
@@ -76,13 +91,40 @@ public class Receptor {
         
         //implemente a decodificação Hemming aqui e encontre os 
         //erros e faça as devidas correções para ter a imagem correta
+    private boolean valorParidade(int indiceParidade, boolean[] bits) {
+        boolean resultado = false;
+        for (int i = indiceParidade; i < bits.length; i += 2 * (indiceParidade + 1)) {
+            // Dentro de cada bloco, percorre os bits que esse bit de paridade verifica
+            for (int k = i; k < i + (indiceParidade + 1) && k < bits.length; k++) {
+
+                    resultado ^= bits[k];
+
+            }
+        }
+        return resultado;
+    }
     
     private boolean[] decoficarDadoHammig(boolean bits[]){
-        
-        //implemente a decodificação Hemming aqui e encontre os 
-        //erros e faça as devidas correções para ter a imagem correta
+        boolean[] paridades = new boolean[4];
+
+        //calculando paridade 1
+        paridades[3] = valorParidade(0, bits);
+        paridades[2] = valorParidade(1, bits);
+        paridades[1] = valorParidade(3, bits);
+        paridades[0] = valorParidade(7, bits);
+         boolean semErro = true;
+         for(int i=0; i < paridades.length; i++){
+             if (paridades[i]) {
+                 semErro = false;
+             }
+         }
+
+
         return null;
-    }
+        }
+
+        
+
     
     
     //recebe os dados do transmissor
@@ -109,7 +151,7 @@ public class Receptor {
         }*/
         
         //aqui você deve trocar o médodo decofificarDado para decoficarDadoCRC (implemente!!)
-        decodificarDado(this.canal.recebeDado());
+        //decoficarDado(this.canal.recebeDado());
         
         
         

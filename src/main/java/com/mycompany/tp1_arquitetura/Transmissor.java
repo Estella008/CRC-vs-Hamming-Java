@@ -183,7 +183,7 @@ public class Transmissor {
                 */
                         boolean[] bitsCRC = dadoBitsCRC(bits); //adiciona o CRC pra enviar
 
-
+                System.out.println("Deu erro.");
 
                 //enviando a mensagem "pela rede" para o receptor (uma forma de testarmos esse método)
                 this.canal.enviarDado(bitsCRC);
