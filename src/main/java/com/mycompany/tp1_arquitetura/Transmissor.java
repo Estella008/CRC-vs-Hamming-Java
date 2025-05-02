@@ -132,7 +132,7 @@ public class Transmissor {
         // Passo 1: Preencher os bits de dados (nos índices que não são de paridade)
         int potencia=0;
         for (int i = 0; i < bitsCodificado.length; i++) {
-            if (i!= Math.pow(2,potencia)) {
+            if (i!=(int) Math.pow(2,potencia)) {
                 bitsCodificado[i] = bits[indiceBits];
                 indiceBits++;
             }else{
