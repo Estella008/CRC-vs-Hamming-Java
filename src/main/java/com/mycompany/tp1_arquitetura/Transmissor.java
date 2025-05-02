@@ -155,17 +155,18 @@ public class Transmissor {
         for(int i = 0; i < this.mensagem.length();i++){
             do{
                 boolean bits[] = streamCaracter(this.mensagem.charAt(i));
+                boolean[] bitsCodificado= null;
                 
-                /*-------AQUI você deve adicionar os bits do códico CRC para contornar os problemas de ruidos
-                            você pode modificar o método anterior também
-                    boolean bitsCRC[] = dadoBitsCRC(bits);
-                */
-                        boolean[] bitsCRC = dadoBitsCRC(bits); //adiciona o CRC pra enviar
+                if(this.tecnica == Estrategia.CRC){
+                    bitsCodificado = dadoBitsCRC(bits);
+                } else if (this.tecnica==Estrategia.HAMMING) {
+                    bitsCodificado = dadoBitsHamming(bits);
 
-                System.out.println("Deu erro.");
+                }
+
 
                 //enviando a mensagem "pela rede" para o receptor (uma forma de testarmos esse método)
-                this.canal.enviarDado(bitsCRC);
+                this.canal.enviarDado(bitsCodificado);
             }while(this.canal.recebeFeedback() == false);
             
             

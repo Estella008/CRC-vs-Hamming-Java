@@ -22,7 +22,7 @@ public class Receptor {
     public String getMensagem() {
         return mensagem;
     }
-    // a função decodificarDado foi separada para reaproveitamento do meto de converter bist em numero inteiro
+    // a função decodificarDado foi separada para reaproveitamento do metodo de converter bits em número inteiro
     private int bitsParaInteiro(boolean[] bits) {
         int resultado = 0;
         int expoente = bits.length - 1;
