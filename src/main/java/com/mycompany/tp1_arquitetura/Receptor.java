@@ -81,17 +81,20 @@ public class Receptor {
             }
         }
 
+        boolean[] bitsOriginais = new boolean[bits.length - (polinomio.length - 1)];
+        bitsOriginais = null;
+
         if (semErro) {
             //extrai os bits originais
-            boolean[] bitsOriginais = new boolean[bits.length - (polinomio.length - 1)];
+
             for (int i = 0; i < bitsOriginais.length; i++) {
                 bitsOriginais[i] = bits[i];
             }
 
-            decodificarDado(bitsOriginais);
+            //decodificarDado(bitsOriginais);
         }
 
-        return semErro ? bits : null; // retorna os bits se ok, senão null
+        return bitsOriginais;  // retorna os bits se ok, senão null ---> tivemos mudanças
     }
         
         //implemente a decodificação Hemming aqui e encontre os 
@@ -135,14 +138,9 @@ public class Receptor {
 
          }
 
-
         return bits;
         }
 
-        
-
-    
-    
     //recebe os dados do transmissor
     public void receberDadoBits(){
 
@@ -160,17 +158,15 @@ public class Receptor {
 
         this.canal.enviaFeedBack(sucesso);
 
-        /*if(this.tecnica == Estrategia.CRC){
+        if(this.tecnica == Estrategia.CRC){
             
         }else{
             
-        }*/
+        }
         
         //aqui você deve trocar o médodo decofificarDado para decoficarDadoCRC (implemente!!)
         //decoficarDado(this.canal.recebeDado());
-        
-        
-        
+
         //será que sempre teremos sucesso nessa recepção?????
         this.canal.enviaFeedBack(true);
     }
@@ -185,7 +181,6 @@ public class Receptor {
         }catch (IOException e){
             System.out.println("Erro ao gravar arquivo");
         }
-
 
         /*
         aqui você deve implementar um mecanismo para gravar a mensagem em arquivo
