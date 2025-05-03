@@ -49,28 +49,30 @@ public class Transmissor {
     
     //convertendo um símbolo para "vetor" de boolean (bits)
     private boolean[] streamCaracter(char simbolo){
-        
+
         //cada símbolo da tabela ASCII é representado com 8 bits
         boolean bits[] = new boolean[8];
-        
+
         //convertendo um char para int (encontramos o valor do mesmo na tabela ASCII)
         int valorSimbolo = (int) simbolo;
+
+        //caracteres inválidos para UTF-8
+        if(valorSimbolo > 255){
+            valorSimbolo = 0; //quebra de linha
+        }
         int indice = 7;
-        
+
         //convertendo cada "bits" do valor da tabela ASCII
-        while(valorSimbolo >= 2 && indice>=0){
+        while(valorSimbolo >= 2){
             int resto = valorSimbolo % 2;
             valorSimbolo /= 2;
             bits[indice] = (resto == 1);
             indice--;
         }
-        if (indice >= 0) {
-            bits[indice] = (valorSimbolo == 1);
-        }
+        bits[indice] = (valorSimbolo == 1);
 
-        
         return bits;
-    } 
+    }
     
     private boolean[] dadoBitsCRC(boolean bits[]){
         

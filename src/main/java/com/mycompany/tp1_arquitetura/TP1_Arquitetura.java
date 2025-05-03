@@ -5,7 +5,7 @@ import java.io.File;
 public class TP1_Arquitetura {
 
     public static void main(String[] args) {
-        File livro = new File("Moby Dick.txt");
+        File livro = new File("Moby Dick-Cap1.txt");
         double probabilidadeErro []= {0.1,0.2,0.3,0.4,0.5};
         long resultadoCrc[] = new long[probabilidadeErro.length];
         long resultadoHamming[]= new long[probabilidadeErro.length];
@@ -13,6 +13,7 @@ public class TP1_Arquitetura {
         long tempoF;
         
         for (int i = 0; i < probabilidadeErro.length; i++) {
+            System.out.println("Executando probablidade de erro: " + probabilidadeErro[i]*100+"%");
             Canal canal = new Canal(probabilidadeErro[i]);
 
             Transmissor transmCRC = new Transmissor(livro, canal, Estrategia.CRC);
