@@ -3,7 +3,7 @@ package com.mycompany.tp1_arquitetura;
 import java.io.*;
 
 public class Transmissor {
-    private String mensagem;
+    private String mensagem= "";
     private Canal canal;
     private File arquivo;
     private Estrategia tecnica;
@@ -58,13 +58,16 @@ public class Transmissor {
         int indice = 7;
         
         //convertendo cada "bits" do valor da tabela ASCII
-        while(valorSimbolo >= 2){
+        while(valorSimbolo >= 2 && indice>=0){
             int resto = valorSimbolo % 2;
             valorSimbolo /= 2;
             bits[indice] = (resto == 1);
             indice--;
         }
-        bits[indice] = (valorSimbolo == 1);
+        if (indice >= 0) {
+            bits[indice] = (valorSimbolo == 1);
+        }
+
         
         return bits;
     } 

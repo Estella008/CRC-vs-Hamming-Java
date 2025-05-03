@@ -37,7 +37,7 @@ public class TP1_Arquitetura {
 
             //mensurando o tempo de execução
             tempoI = System.currentTimeMillis();
-            transmCRC.enviaDado();
+            transmHamming.enviaDado();
             tempoF = System.currentTimeMillis();
 
             resultadoHamming[i] = (tempoF - tempoI);
