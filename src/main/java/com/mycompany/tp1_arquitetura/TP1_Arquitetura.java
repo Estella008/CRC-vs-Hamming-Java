@@ -24,7 +24,7 @@ public class TP1_Arquitetura {
         tempoI = System.currentTimeMillis();
         transmCRC.enviaDado();
         tempoF = System.currentTimeMillis();
-        System.out.println(receberCRC.getMensagem());
+        receberCRC.gravaMensArquivo();
         
 
     }

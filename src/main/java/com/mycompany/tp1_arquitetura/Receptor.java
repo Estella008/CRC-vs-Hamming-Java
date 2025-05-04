@@ -40,6 +40,9 @@ public class Receptor {
 
     private boolean decodificarDado(boolean bits[]){
         int codigoAscii = bitsParaInteiro(bits);
+        System.out.print("Bits recebidos: ");
+        for (boolean b : bits) System.out.print(b ? 1 : 0);
+        System.out.println(" (tamanho: " + bits.length + ")");
 //        int expoente = bits.length-1;
 //
 //        //converntendo os "bits" para valor inteiro para então encontrar o valor tabela ASCII
@@ -85,7 +88,7 @@ public class Receptor {
     }
     private boolean[] extrairBitsCRC(boolean[] bits) {
         //extrai os bits originais
-        boolean[] bitsOriginais = new boolean[bits.length - 4];
+        boolean[] bitsOriginais = new boolean[bits.length - 3];
         for (int i = 0; i < bitsOriginais.length; i++) {
             bitsOriginais[i] = bits[i];
         }
@@ -183,12 +186,15 @@ public class Receptor {
         boolean sucesso = false;
 
         if (this.tecnica == Estrategia.CRC) {
-            bitsCorrigidos = decoficarDadoCRC(bitsRecebidos);
-            sucesso = verificarRestoCRC(bitsCorrigidos);
-            if(sucesso){
-                boolean[] bitsOriginais = extrairBitsCRC(bitsCorrigidos);
+            // Usar os bits recebidos diretamente para a verificação
+            boolean[] resto = decoficarDadoCRC(bitsRecebidos);
+            sucesso = verificarRestoCRC(resto);
+
+            if (sucesso) {
+                // Extrair os bits originais diretamente dos bits recebidos
+                boolean[] bitsOriginais = extrairBitsCRC(bitsRecebidos);
                 decodificarDado(bitsOriginais);
-            };
+            }
 
         } else if(this.tecnica== Estrategia.HAMMING) {
             bitsCorrigidos= decoficarDadoHammig(bitsRecebidos);
