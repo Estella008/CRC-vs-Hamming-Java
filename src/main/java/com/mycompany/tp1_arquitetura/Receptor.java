@@ -111,33 +111,38 @@ public class Receptor {
     private boolean[] decoficarDadoHammig(boolean bits[]){
         boolean[] paridades = new boolean[4];
 
-        //calculando paridade 1
+        // Calculando as paridades
         paridades[3] = valorParidade(0, bits);
         paridades[2] = valorParidade(1, bits);
         paridades[1] = valorParidade(3, bits);
         paridades[0] = valorParidade(7, bits);
-         boolean erro = false;
-         for(int i=0; i < paridades.length; i++){
-             if (paridades[i]) {
-                 erro = true;
-             }
-         }
 
-         if (erro) {
-             int bitErrado= bitsParaInteiro(paridades);
-             if (bits[bitErrado -1] ) {
-                 bits[bitErrado -1] = false;
-             }else {
-                 bits[bitErrado -1] = true;
-             }
+        // Verificando se há erro
+        boolean erro = false;
+        for (int i = 0; i < paridades.length; i++) {
+            if (paridades[i]) {
+                erro = true;
+            }
+        }
 
-         }
+        // Se houver erro, corrigimos o bit
+        if (erro) {
+            // Calculando o número binário que representa a posição do bit com erro
+            int bitErrado = bitsParaInteiro(paridades);
 
+            // Corrige o bit na posição indicada
+            if (bits[bitErrado - 1]) {
+                bits[bitErrado - 1] = false;
+            } else {
+                bits[bitErrado - 1] = true;
+            }
+        }
 
-
-
-
+        // Extrair os dados corrigidos
         return extrairDadosHamming(bits);
+
+
+
         }
     boolean[] extrairDadosHamming(boolean[] bitsComParidade) {
         boolean[] dadosOriginais = new boolean[8]; // Para 8 bits de dados
@@ -146,9 +151,11 @@ public class Receptor {
         // Posições dos bits de paridade (índices base 0)
         int[] posicoesParidade = {0, 1, 3, 7}; // Para 12 bits (8 dados + 4 paridades)
 
+        // Extração dos dados (ignora os bits de paridade)
         for (int i = 0; i < bitsComParidade.length; i++) {
-            // Verifica se não é posição de paridade
             boolean ehParidade = false;
+
+            // Verifica se o índice i é um bit de paridade
             for (int pos : posicoesParidade) {
                 if (i == pos) {
                     ehParidade = true;

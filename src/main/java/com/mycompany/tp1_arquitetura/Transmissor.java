@@ -133,21 +133,22 @@ public class Transmissor {
     }
 
     private boolean[] dadoBitsHamming(boolean[] bits) {
-        boolean[] bitsCodificado = new boolean[bits.length+4]; // 8 bits de dados + 4 bits de paridade
+        boolean[] bitsCodificado = new boolean[bits.length + 4]; // 4 bits de paridade + n bits de dados
         int indiceBits = 0;
 
-        // Passo 1: Preencher os bits de dados (nos índices que não são de paridade)
-        int potencia=0;
+        // Passo 1: Preencher os bits de dados nas posições corretas
+        int potencia = 0;
         for (int i = 0; i < bitsCodificado.length; i++) {
-            if (i!=(int) Math.pow(2,potencia)) {
+            // Se o índice for uma potência de 2, é uma posição de paridade
+            if (i != (int) Math.pow(2, potencia) - 1) { // Ajuste de índice para começar em 0
                 bitsCodificado[i] = bits[indiceBits];
                 indiceBits++;
-            }else{
+            } else {
                 potencia++;
             }
         }
 
-        // Passo 2: Calcular os bits de paridade (após os dados estarem no lugar)
+        // Passo 2: Calcular os bits de paridade
         bitsCodificado[0] = valorParidadeHamming(0, bitsCodificado); // paridade 1
         bitsCodificado[1] = valorParidadeHamming(1, bitsCodificado); // paridade 2
         bitsCodificado[3] = valorParidadeHamming(3, bitsCodificado); // paridade 4
