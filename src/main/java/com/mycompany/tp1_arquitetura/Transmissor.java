@@ -75,11 +75,11 @@ public class Transmissor {
     }
     
     private boolean[] dadoBitsCRC(boolean bits[]){
-        for (boolean bit: bits) {
+       /* for (boolean bit: bits) {
             if(bit) System.out.print(1);
             else System.out.print(0);
         }
-        System.out.println();
+        System.out.println();*/
         
         /*sua implementação aqui!!!
         modifique o que precisar neste método

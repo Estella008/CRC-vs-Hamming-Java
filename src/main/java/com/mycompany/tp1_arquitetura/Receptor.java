@@ -40,9 +40,9 @@ public class Receptor {
 
     private boolean decodificarDado(boolean bits[]){
         int codigoAscii = bitsParaInteiro(bits);
-        System.out.print("Bits recebidos: ");
+        /*System.out.print("Bits recebidos: ");
         for (boolean b : bits) System.out.print(b ? 1 : 0);
-        System.out.println(" (tamanho: " + bits.length + ")");
+        System.out.println(" (tamanho: " + bits.length + ")");*/
 //        int expoente = bits.length-1;
 //
 //        //converntendo os "bits" para valor inteiro para então encontrar o valor tabela ASCII
@@ -207,13 +207,13 @@ public class Receptor {
     }
     
 
-    public void gravaMensArquivo()  {
+    public void gravaMensArquivo(int probilidadeDeErro)  {
 
         String nomeArquivo= "";
         if(this.tecnica == Estrategia.CRC){
-            nomeArquivo= "Livro_CRC.txt";
+            nomeArquivo= "Livro_CRC_"+probilidadeDeErro+"%.txt";
         }else if(this.tecnica== Estrategia.HAMMING){
-            nomeArquivo= "Livro_Hamming.txt";
+            nomeArquivo= "Livro_HAMMING_"+probilidadeDeErro+"%.txt";
         }
         try(BufferedWriter wr = new BufferedWriter(new FileWriter(nomeArquivo))){
             wr.write(this.mensagem);
