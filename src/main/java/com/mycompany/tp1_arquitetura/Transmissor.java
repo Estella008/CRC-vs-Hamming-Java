@@ -75,43 +75,45 @@ public class Transmissor {
     }
     
     private boolean[] dadoBitsCRC(boolean bits[]){
+        for (boolean bit: bits) {
+            if(bit) System.out.print(1);
+            else System.out.print(0);
+        }
+        System.out.println();
         
         /*sua implementação aqui!!!
         modifique o que precisar neste método
         */
 
-        boolean[] polinomio = {true, false, false, false, false, true, true, true, true}; //1101 - vou colocar só um exemplo, depois tento mudar aaaaaa
-        boolean[] dados = new boolean[bits.length + polinomio.length - 1]; //aqui eu crio o vetor do tamanho do polinomio-1, mas ainda tenho que rever isso"
+        boolean[] polinomio = {true, true, false, true}; // 1101
+        int n = bits.length;
+        int m = polinomio.length;
 
-        for (int i = 0; i < bits.length; i++) { //copiando os bits originais
+        // Cria um novo array com espaço para os bits extras do CRC
+        boolean[] dados = new boolean[n + m - 1];
+
+        // Copia os bits originais no início
+        for (int i = 0; i < n; i++) {
             dados[i] = bits[i];
         }
 
+        // Faz a divisão binária (XOR) para calcular o CRC
+        boolean[] temp = dados.clone(); // trabalhamos sobre uma cópia
 
-        //Fazer um laço pra pegar a mensagem
-        for (int i = 0; i < bits.length; i++) {
-            if (dados[i]) { //realiza xor se for 1
-                for (int j = 0; j < polinomio.length; j++) {
-                    dados[i + j] ^= polinomio[j]; //como fazer xor aqui? tem alguma forma direta?
-                //aqui faz o xor, custei descobrir
+        for (int i = 0; i < n; i++) {
+            if (temp[i]) {
+                for (int j = 0; j < m; j++) {
+                    temp[i + j] ^= polinomio[j];
                 }
             }
         }
 
-        //geralmente depois disso faço a divisao xor, como fazer isso aqui? só deus... pesquiso depois
-        boolean[] resultado = new boolean[bits.length + polinomio.length - 1];
-
-        //bits originais
-        for (int i = 0; i < bits.length; i++) {
-            resultado[i] = bits[i];
+        // Copia o resto (CRC) no final do dado original
+        for (int i = 0; i < m - 1; i++) {
+            dados[n + i] = temp[n + i];
         }
 
-        //bits do crc que são da divisão do xor
-        for (int i = 0; i < polinomio.length - 1; i++) {
-            resultado[bits.length + i] = dados[bits.length + i];
-        }
-        
-        return resultado;
+        return dados;
 
     }
 
@@ -157,26 +159,25 @@ public class Transmissor {
 
     
     public void enviaDado(){
-        for(int i = 0; i < this.mensagem.length();i++){
-            do{
-                boolean bits[] = streamCaracter(this.mensagem.charAt(i));
-                boolean[] bitsCodificado= null;
-                
-                if(this.tecnica == Estrategia.CRC){
-                    bitsCodificado = dadoBitsCRC(bits);
-                } else if (this.tecnica==Estrategia.HAMMING) {
-                    bitsCodificado = dadoBitsHamming(bits);
 
+        for(int i = 0; i < this.mensagem.length(); i++) {
+            boolean[] bitsOriginais = streamCaracter(this.mensagem.charAt(i)); // fora do loop
+            boolean[] bitsCodificado;
+
+            do {
+                if (this.tecnica == Estrategia.CRC) {
+                    bitsCodificado = dadoBitsCRC(bitsOriginais); // recodifica a partir dos bits originais
+                } else if (this.tecnica == Estrategia.HAMMING) {
+                    bitsCodificado = dadoBitsHamming(bitsOriginais);
+                } else {
+                    bitsCodificado = bitsOriginais; // fallback, se houver
                 }
 
-
-                //enviando a mensagem "pela rede" para o receptor (uma forma de testarmos esse método)
                 this.canal.enviarDado(bitsCodificado);
-            }while(this.canal.recebeFeedback() == false);
-            
-            
-            
-            //o que faremos com o indicador quando houver algum erro? qual ação vamos tomar com o retorno do receptor
+
+            } while (this.canal.recebeFeedback() == false);
         }
+            //o que faremos com o indicador quando houver algum erro? qual ação vamos tomar com o retorno do receptor
+
     }
 }

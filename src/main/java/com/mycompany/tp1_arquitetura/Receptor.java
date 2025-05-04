@@ -49,51 +49,49 @@ public class Receptor {
 //            }
 //            expoente--;
 //        }
-        
+
         //concatenando cada simbolo na mensagem original
         this.mensagem += (char)codigoAscii;
-        
+
         //esse retorno precisa ser pensado... será que o dado sempre chega sem ruído???
         return true;
+
     }
-    
-    private boolean[] decoficarDadoCRC(boolean bits[]){ //socorrooooo aaaaaa
 
-        //se a divisão for igual a 0, não houve errro
-        boolean[] polinomio = {true, false, false, false, false, true, true, true, true}; //1101
-        boolean[] dados = bits.clone(); //clona os bits recebidos
+    private boolean[] decoficarDadoCRC(boolean bits[]){
+        boolean[] polinomio = {true, true, false, true}; // 1101
+        boolean[] dados = bits.clone(); // clona os bits recebidos
 
-        //realizo a divisao, mas usando o polinomio
-        for(int i = 0; i < bits.length- polinomio.length; i++){
-            if(dados[i]){
-                for (int j = 0; j < polinomio.length; j++){
+        // Aplica novamente a divisão para obter o resto
+        for (int i = 0; i < bits.length - polinomio.length + 1; i++) {
+            if (dados[i]) {
+                for (int j = 0; j < polinomio.length; j++) {
                     dados[i + j] ^= polinomio[j];
                 }
             }
         }
 
-        //verifica se o resto da divisão ézero
-        boolean semErro = true;
-        for (int i = bits.length - (polinomio.length - 1); i < bits.length; i++) {
-            if (dados[i]) {
-                semErro = false;
-                break;
-            }
-        }
-
-        if (semErro) {
-            //extrai os bits originais
-            boolean[] bitsOriginais = new boolean[bits.length - (polinomio.length - 1)];
-            for (int i = 0; i < bitsOriginais.length; i++) {
-                bitsOriginais[i] = bits[i];
-            }
-
-            decodificarDado(bitsOriginais);
-        }
-
-        return semErro ? bits : null; // retorna os bits se ok, senão null
+        return dados;
     }
-        
+    //função para verificar se o resto do CRC é zero
+    private boolean verificarRestoCRC(boolean[] resto){
+
+        for (boolean bit : resto) {
+            if (bit) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean[] extrairBitsCRC(boolean[] bits) {
+        //extrai os bits originais
+        boolean[] bitsOriginais = new boolean[bits.length - 4];
+        for (int i = 0; i < bitsOriginais.length; i++) {
+            bitsOriginais[i] = bits[i];
+        }
+        return bitsOriginais;
+    }
+
         //implemente a decodificação Hemming aqui e encontre os 
         //erros e faça as devidas correções para ter a imagem correta
     private boolean valorParidade(int indiceParidade, boolean[] bits) {
@@ -127,7 +125,7 @@ public class Receptor {
 
          if (erro) {
              int bitErrado= bitsParaInteiro(paridades);
-             if (bits[bitErrado -1]) {
+             if (bits[bitErrado -1] ) {
                  bits[bitErrado -1] = false;
              }else {
                  bits[bitErrado -1] = true;
@@ -136,8 +134,36 @@ public class Receptor {
          }
 
 
-        return bits;
+
+
+
+        return extrairDadosHamming(bits);
         }
+    boolean[] extrairDadosHamming(boolean[] bitsComParidade) {
+        boolean[] dadosOriginais = new boolean[8]; // Para 8 bits de dados
+        int indiceDado = 0;
+
+        // Posições dos bits de paridade (índices base 0)
+        int[] posicoesParidade = {0, 1, 3, 7}; // Para 12 bits (8 dados + 4 paridades)
+
+        for (int i = 0; i < bitsComParidade.length; i++) {
+            // Verifica se não é posição de paridade
+            boolean ehParidade = false;
+            for (int pos : posicoesParidade) {
+                if (i == pos) {
+                    ehParidade = true;
+                    break;
+                }
+            }
+
+            if (!ehParidade && indiceDado < dadosOriginais.length) {
+                dadosOriginais[indiceDado] = bitsComParidade[i];
+                indiceDado++;
+            }
+        }
+
+        return dadosOriginais;
+    }
 
         
 
@@ -145,40 +171,37 @@ public class Receptor {
     
     //recebe os dados do transmissor
     public void receberDadoBits(){
-
-        boolean[] dadosRecebidos = this.canal.recebeDado();
-        boolean[] dadosCorrigidos = null;
+        boolean[] bitsRecebidos = this.canal.recebeDado();
+        boolean[] bitsCorrigidos = null;
         boolean sucesso = false;
 
         if (this.tecnica == Estrategia.CRC) {
-            dadosCorrigidos = decoficarDadoCRC(dadosRecebidos);
-            sucesso = (dadosCorrigidos != null);
-        } else {
-            //tem que fazer o hammer aqui depois
-            sucesso = decodificarDado(dadosRecebidos);
+            bitsCorrigidos = decoficarDadoCRC(bitsRecebidos);
+            sucesso = verificarRestoCRC(bitsCorrigidos);
+            if(sucesso){
+                boolean[] bitsOriginais = extrairBitsCRC(bitsCorrigidos);
+                decodificarDado(bitsOriginais);
+            };
+
+        } else if(this.tecnica== Estrategia.HAMMING) {
+            bitsCorrigidos= decoficarDadoHammig(bitsRecebidos);
+            sucesso = decodificarDado(bitsCorrigidos);
+
         }
 
         this.canal.enviaFeedBack(sucesso);
 
-        /*if(this.tecnica == Estrategia.CRC){
-            
-        }else{
-            
-        }*/
-        
-        //aqui você deve trocar o médodo decofificarDado para decoficarDadoCRC (implemente!!)
-        //decoficarDado(this.canal.recebeDado());
-        
-        
-        
-        //será que sempre teremos sucesso nessa recepção?????
-        this.canal.enviaFeedBack(true);
     }
     
-    //
+
     public void gravaMensArquivo()  {
 
-        String nomeArquivo= "LivroMensArquivo.txt";
+        String nomeArquivo= "";
+        if(this.tecnica == Estrategia.CRC){
+            nomeArquivo= "Livro_CRC.txt";
+        }else if(this.tecnica== Estrategia.HAMMING){
+            nomeArquivo= "Livro_Hamming.txt";
+        }
         try(BufferedWriter wr = new BufferedWriter(new FileWriter(nomeArquivo))){
             wr.write(this.mensagem);
 
