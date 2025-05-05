@@ -15,7 +15,7 @@ Avaliar a performance dos algoritmos **CRC** e **Hamming** em relação ao tempo
 
 1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/seu-usuario/seu-novo-repositorio.git](https://github.com/Estella008/TP1_Arquitetura.git
+   https://github.com/Estella008/CRC-vs-Hamming-Java.git
 
 2. **Compile os arquivos em java**:
    javac com/mycompany/tp1_arquitetura/*.java
