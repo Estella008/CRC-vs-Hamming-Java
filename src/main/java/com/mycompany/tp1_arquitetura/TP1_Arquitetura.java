@@ -5,7 +5,7 @@ import java.io.File;
 public class TP1_Arquitetura {
 
     public static void main(String[] args) {
-        File livro = new File("Moby Dick-Cap1.txt");
+        File livro = new File("MobDick_TESTE.txt");
         double probabilidadeErro []= {0.1,0.2,0.3,0.4,0.5};
         long resultadoCrc[] = new long[probabilidadeErro.length];
         long resultadoHamming[]= new long[probabilidadeErro.length];
