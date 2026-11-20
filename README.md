@@ -8,36 +8,36 @@ Avaliar a performance dos algoritmos **CRC** e **Hamming** em relação ao tempo
 
 ## 🛠️ Tecnologias Utilizadas
 
-- Java (versão 8 ou superior)
-- Ambiente de execução via Prompt de Comando ou Console
+- Java 19+
+- Maven
 
 ## 🚀 Como Executar
 
-1. **Clone o repositório**:
-   ```bash
-   https://github.com/Estella008/CRC-vs-Hamming-Java.git
+Pré-requisitos: JDK 19+ e Maven.
 
-2. **Compile os arquivos em java**:
-   javac com/mycompany/tp1_arquitetura/*.java
-   
-3. **Execute o programa**
-   java com.mycompany.tp1_arquitetura.TP1_Arquitetura
+```bash
+git clone https://github.com/Estella008/CRC-vs-Hamming-Java.git
+cd CRC-vs-Hamming-Java
+mvn compile exec:java
+```
+
+Sem Maven:
+
+```bash
+javac -d out src/main/java/com/mycompany/tp1_arquitetura/*.java
+java -cp out com.mycompany.tp1_arquitetura.TP1_Arquitetura
+```
 
 ## Funcionalidades
-  -Simulação de transmissão de mensagens com diferentes probabilidades de erro.
-
-  -Implementação dos algoritmos CRC e Hamming.
-
- -Medição e comparação do tempo de execução dos dois métodos.
-
-  -Geração de dados para análise estatística
+- Simulação de transmissão de mensagens com diferentes probabilidades de erro.
+- Implementação dos algoritmos CRC e Hamming.
+- Medição e comparação do tempo de execução dos dois métodos.
+- Geração de dados para análise estatística
 
 ## Resultados esperados
-  O sistema gera uma média de tempo de execução dos dois métodos em diferentes probabilidades de erro, permitindo identificar:
+O sistema gera uma média de tempo de execução dos dois métodos em diferentes probabilidades de erro, permitindo identificar:
 
-  -Estabilidade do Hamming em cenários com erro de 1 bit.
-
-  -Aumento progressivo no tempo de execução do CRC conforme cresce a taxa de erro.
-
-  -Limitações e vantagens de cada algoritmo.
+- Estabilidade do Hamming em cenários com erro de 1 bit.
+- Aumento progressivo no tempo de execução do CRC conforme cresce a taxa de erro.
+- Limitações e vantagens de cada algoritmo.
   
